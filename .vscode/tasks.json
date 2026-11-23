@@ -1,0 +1,53 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "1. Run Database Migration (migrate-v4.js)",
+      "type": "shell",
+      "command": "cd complaint-system-v3-fixed/complaint-system-v3/backend && node migrate-v4.js",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated",
+        "focus": true
+      }
+    },
+    {
+      "label": "2. Start Backend Server (Port 5000)",
+      "type": "shell",
+      "command": "cd complaint-system-v3-fixed/complaint-system-v3/backend && node server.js",
+      "isBackground": true,
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated",
+        "group": "servers",
+        "focus": false
+      }
+    },
+    {
+      "label": "3. Start Frontend UI (Port 3000)",
+      "type": "shell",
+      "command": "cd complaint-system-v3-fixed/complaint-system-v3/frontend && npm start",
+      "isBackground": true,
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated",
+        "group": "servers",
+        "focus": true
+      }
+    },
+    {
+      "label": "4. Verify AI Features (test-ai-features.js)",
+      "type": "shell",
+      "command": "cd complaint-system-v3-fixed/complaint-system-v3/backend && node test-ai-features.js",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated",
+        "focus": true
+      }
+    }
+  ]
+}

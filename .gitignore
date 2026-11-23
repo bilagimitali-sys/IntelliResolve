@@ -1,0 +1,28 @@
+# Dependencies
+**/node_modules/
+
+# Environment variables
+**/.env
+**/.env.*
+!.env.example
+
+# Build outputs
+**/build/
+**/dist/
+
+# Uploaded media
+complaint-system-v3-fixed/complaint-system-v3/backend/uploads/*
+!complaint-system-v3-fixed/complaint-system-v3/backend/uploads/voice/
+!complaint-system-v3-fixed/complaint-system-v3/backend/uploads/bus_attachments/
+
+complaint-system-v3-fixed/complaint-system-v3/backend/uploads/voice/*
+complaint-system-v3-fixed/complaint-system-v3/backend/uploads/bus_attachments/*
+
+# Logs
+*.log
+logs/
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini

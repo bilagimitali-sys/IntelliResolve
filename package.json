@@ -1,0 +1,13 @@
+{
+  "name": "kle-tech-grievance-management-platform",
+  "version": "4.0.0",
+  "description": "KLE Technological University - AI-Powered Centralized Grievance Management Platform",
+  "scripts": {
+    "dev": "node run-all.js",
+    "start": "node run-all.js",
+    "frontend": "npm --prefix complaint-system-v3-fixed/complaint-system-v3/frontend start",
+    "backend": "cd complaint-system-v3-fixed/complaint-system-v3/backend && node server.js",
+    "migrate": "cd complaint-system-v3-fixed/complaint-system-v3/backend && node migrate-v4.js",
+    "test-ai": "cd complaint-system-v3-fixed/complaint-system-v3/backend && node test-ai-features.js"
+  }
+}

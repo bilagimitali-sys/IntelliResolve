@@ -45,3 +45,5 @@ Frontend opens on **http://localhost:3000**
 | **Bus Coordinator** | `bus.coord@kletech.ac.in` | `Password@1234` | Campus bus complaints, fleet directory, escalations |
 
 *(For full architecture and documentation, see `complaint-system-v3-fixed/complaint-system-v3/README.md`).*
+# IntelliResolve
+AI-powered grievance management system with smart complaint classification, priority detection, duplicate detection, and automated routing for KLE Technological University.

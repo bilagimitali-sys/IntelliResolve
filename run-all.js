@@ -13,7 +13,7 @@ function findDirs() {
   ];
 
   for (const c of candidates) {
-    if (fs.existsSync(path.join(c.backend, 'server.js')) && fs.existsSync(path.join(c.frontend, 'package.json'))) {
+    if (fs.existsSync(path.join(c.backend, 'main.py')) && fs.existsSync(path.join(c.frontend, 'package.json'))) {
       return c;
     }
   }
@@ -28,16 +28,16 @@ if (!dirs) {
 
 console.log('\n============================================================');
 console.log('🏛️  KLE TECHNOLOGICAL UNIVERSITY — GRIEVANCE PLATFORM');
-console.log('🚀 Starting Backend API & Frontend React App simultaneously...');
+console.log('🚀 Starting Python FastAPI Backend & Frontend React App...');
 console.log(`📁 Backend:  ${dirs.backend}`);
 console.log(`📁 Frontend: ${dirs.frontend}`);
 console.log('============================================================\n');
 
-// 1. Start Backend Server
-const backend = spawn('node', ['server.js'], {
+// 1. Start Python FastAPI Backend Server
+const pythonCmd = process.platform === 'win32' ? 'python' : 'python3';
+const backend = spawn(pythonCmd, ['-m', 'uvicorn', 'main:app', '--host', '0.0.0.0', '--port', '5000'], {
   cwd: dirs.backend,
-  shell: true,
-  env: { ...process.env, FORCE_COLOR: 'true' },
+  env: { ...process.env, PYTHONUNBUFFERED: '1', PYTHONIOENCODING: 'utf-8', PYTHONUTF8: '1' },
 });
 
 backend.stdout.on('data', (data) => {
@@ -49,12 +49,15 @@ backend.stderr.on('data', (data) => {
 });
 
 // 2. Start Frontend React Server
-const npmCmd = process.platform === 'win32' ? 'npm.cmd' : 'npm';
-const frontend = spawn(npmCmd, ['start'], {
-  cwd: dirs.frontend,
-  shell: true,
-  env: { ...process.env, BROWSER: 'none', FORCE_COLOR: 'true' }, // prevents duplicate browser auto-open spam if already open
-});
+const frontend = process.platform === 'win32'
+  ? spawn('cmd.exe', ['/c', 'npm', 'start'], {
+      cwd: dirs.frontend,
+      env: { ...process.env, BROWSER: 'none', FORCE_COLOR: 'true' },
+    })
+  : spawn('npm', ['start'], {
+      cwd: dirs.frontend,
+      env: { ...process.env, BROWSER: 'none', FORCE_COLOR: 'true' },
+    });
 
 frontend.stdout.on('data', (data) => {
   process.stdout.write(`[Frontend] ${data}`);

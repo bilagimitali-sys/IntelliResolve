@@ -6,8 +6,8 @@
     "dev": "node run-all.js",
     "start": "node run-all.js",
     "frontend": "npm --prefix complaint-system-v3-fixed/complaint-system-v3/frontend start",
-    "backend": "cd complaint-system-v3-fixed/complaint-system-v3/backend && node server.js",
-    "migrate": "cd complaint-system-v3-fixed/complaint-system-v3/backend && node migrate-v4.js",
-    "test-ai": "cd complaint-system-v3-fixed/complaint-system-v3/backend && node test-ai-features.js"
+    "backend": "cd complaint-system-v3-fixed/complaint-system-v3/backend && python -m uvicorn main:app --host 0.0.0.0 --port 5000",
+    "migrate": "cd complaint-system-v3-fixed/complaint-system-v3/backend && python migrate_v4.py",
+    "test-ai": "cd complaint-system-v3-fixed/complaint-system-v3/backend && python test_ai_features.py"
   }
 }

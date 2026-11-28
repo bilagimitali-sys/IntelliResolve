@@ -2,9 +2,9 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "1. Run Database Migration (migrate-v4.js)",
+      "label": "1. Run Database Migration (migrate_v4.py)",
       "type": "shell",
-      "command": "cd complaint-system-v3-fixed/complaint-system-v3/backend && node migrate-v4.js",
+      "command": "cd complaint-system-v3-fixed/complaint-system-v3/backend && python migrate_v4.py",
       "problemMatcher": [],
       "presentation": {
         "reveal": "always",
@@ -13,9 +13,9 @@
       }
     },
     {
-      "label": "2. Start Backend Server (Port 5000)",
+      "label": "2. Start FastAPI Backend Server (Port 5000)",
       "type": "shell",
-      "command": "cd complaint-system-v3-fixed/complaint-system-v3/backend && node server.js",
+      "command": "cd complaint-system-v3-fixed/complaint-system-v3/backend && python -m uvicorn main:app --host 0.0.0.0 --port 5000",
       "isBackground": true,
       "problemMatcher": [],
       "presentation": {
@@ -39,9 +39,9 @@
       }
     },
     {
-      "label": "4. Verify AI Features (test-ai-features.js)",
+      "label": "4. Verify AI Features (test_ai_features.py)",
       "type": "shell",
-      "command": "cd complaint-system-v3-fixed/complaint-system-v3/backend && node test-ai-features.js",
+      "command": "cd complaint-system-v3-fixed/complaint-system-v3/backend && python test_ai_features.py",
       "problemMatcher": [],
       "presentation": {
         "reveal": "always",

@@ -16,6 +16,7 @@ BACKEND_DIR = Path(__file__).resolve().parents[1]
 if str(BACKEND_DIR) not in sys.path:
     sys.path.insert(0, str(BACKEND_DIR))
 
+import config  # noqa: E402
 import db  # noqa: E402
 import main  # noqa: E402
 
@@ -373,6 +374,7 @@ fake_db = FakeDatabase()
 @pytest.fixture(autouse=True)
 def patch_db(monkeypatch: pytest.MonkeyPatch) -> FakeDatabase:
     fake_db.reset()
+    monkeypatch.setattr(config, "FREE_LLM_ENABLED", False)
     monkeypatch.setattr(db, "query_all", fake_db.query_all)
     monkeypatch.setattr(db, "query_one", fake_db.query_one)
     monkeypatch.setattr(db, "execute", fake_db.execute)
@@ -579,9 +581,19 @@ def test_bus_complaints_notifications_analytics_and_ai() -> None:
     assert analytics.json()["transport"]["totals"]["total"] == 1
 
     # AI endpoints
+    ai_stat = client.get("/api/ai/status", headers={"Authorization": f"Bearer {student_tok}"})
+    assert ai_stat.status_code == 200
+    assert "configured" in ai_stat.json()
+
+    chat_q = client.post("/api/ai/chat", headers={"Authorization": f"Bearer {student_tok}"}, json={"message": "How does intelligent routing work?"})
+    assert chat_q.status_code == 200
+    assert chat_q.json()["extracted_complaint"] is None
+    assert len(chat_q.json()["recommendations"]) >= 1
+
     chat = client.post("/api/ai/chat", headers={"Authorization": f"Bearer {student_tok}"}, json={"message": "Bus #02 from CBT was 30 mins late"})
     assert chat.status_code == 200
     assert chat.json()["routing"]["target_module"] == "transportation"
+    assert chat.json()["extracted_complaint"] is not None
 
     draft = client.post("/api/ai/draft-reply", headers={"Authorization": f"Bearer {bus_tok}"}, json={"complaintTitle": "Bus delayed"})
     assert draft.status_code == 200

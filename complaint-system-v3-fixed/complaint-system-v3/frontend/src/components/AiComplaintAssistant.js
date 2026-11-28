@@ -83,6 +83,7 @@ export default function AiComplaintAssistant({ onApply, defaultText = '', module
         {
           sender: 'bot',
           text: replyData.reply,
+          recommendations: replyData.recommendations || [],
           extracted_complaint: replyData.extracted_complaint,
           duplicate_check: replyData.duplicate_check,
         }
@@ -230,6 +231,14 @@ export default function AiComplaintAssistant({ onApply, defaultText = '', module
                 {chatMessages.map((m, i) => (
                   <div key={i} className={`chat-bubble ${m.sender === 'user' ? 'chat-bubble-user' : 'chat-bubble-bot'}`} style={{ fontSize: 13 }}>
                     <div style={{ whiteSpace: 'pre-wrap' }}>{m.text}</div>
+                    {m.recommendations && m.recommendations.length > 0 && (
+                      <div style={{ marginTop: 6, padding: '6px 8px', borderRadius: 6, background: 'rgba(15, 23, 42, 0.04)', border: '1px solid var(--border)', fontSize: 12 }}>
+                        <strong style={{ fontSize: 11, color: 'var(--primary)' }}>💡 Recommendations:</strong>
+                        <ul style={{ margin: '4px 0 0', paddingLeft: 16 }}>
+                          {m.recommendations.map((rec, idx) => <li key={idx}>{rec}</li>)}
+                        </ul>
+                      </div>
+                    )}
                     {m.duplicate_check?.has_duplicate && (
                       <div style={{ background: '#FFFBEB', border: '1px solid #FCD34D', padding: '6px 8px', borderRadius: 6, fontSize: 11, color: '#92400E', marginTop: 6 }}>
                         ⚠️ <strong>Potential Duplicate Detected ({m.duplicate_check.similarity_percentage}% match):</strong>

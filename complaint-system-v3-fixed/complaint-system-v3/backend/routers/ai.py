@@ -13,6 +13,7 @@ from dependencies.auth import get_current_user
 from utils.ai_service import (
     chat_with_grievance_ai,
     generate_draft_reply,
+    get_ai_provider_status,
     intelligent_route,
     refine_complaint,
     summarize_grievance,
@@ -141,6 +142,11 @@ async def perform_duplicate_check(
         return {"has_duplicate": False}
 
 
+@router.get("/status")
+async def ai_status(_: dict[str, Any] = Depends(get_current_user)) -> dict[str, Any]:
+    return get_ai_provider_status()
+
+
 @router.post("/chat")
 async def ai_chat(
     body: ChatRequest,
@@ -150,10 +156,38 @@ async def ai_chat(
     if not msg:
         raise HTTPException(status_code=400, detail="Message cannot be empty")
 
+    db_context: dict[str, Any] = {"user_complaints": [], "user_bus_complaints": []}
+    try:
+        uid = current_user.get("user_id")
+        if uid:
+            db_context["user_complaints"] = await db.query_all(
+                """
+                SELECT complaint_id, title, status, category, priority, department_code, created_at
+                FROM complaints
+                WHERE user_id = %s
+                ORDER BY created_at DESC
+                LIMIT 5
+                """,
+                (uid,),
+            )
+            db_context["user_bus_complaints"] = await db.query_all(
+                """
+                SELECT bus_complaint_id, title, status, complaint_type, priority, created_at
+                FROM bus_complaints
+                WHERE user_id = %s
+                ORDER BY created_at DESC
+                LIMIT 5
+                """,
+                (uid,),
+            )
+    except Exception:
+        pass
+
     chat_response = await chat_with_grievance_ai(
         message=msg,
         conversation_history=body.conversationHistory or [],
         student_profile=current_user,
+        db_context=db_context,
     )
 
     duplicate_check: dict[str, Any] = {"has_duplicate": False}

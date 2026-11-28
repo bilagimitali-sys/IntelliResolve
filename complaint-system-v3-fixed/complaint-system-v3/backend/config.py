@@ -27,7 +27,16 @@ CLIENT_URL: str = os.getenv("CLIENT_URL", "http://localhost:3000")
 
 EMAIL_USER: str = os.getenv("EMAIL_USER", "")
 EMAIL_PASS: str = os.getenv("EMAIL_PASS", "")
-GEMINI_API_KEY: str = os.getenv("GEMINI_API_KEY", "")
+
+# AI Providers (set any key in backend/.env, or use built-in keyless public LLM endpoints)
+GEMINI_API_KEY: str = os.getenv("GEMINI_API_KEY", "").strip()
+GEMINI_MODEL: str = os.getenv("GEMINI_MODEL", "gemini-2.5-flash").strip()
+GROQ_API_KEY: str = os.getenv("GROQ_API_KEY", "").strip()
+GROQ_MODEL: str = os.getenv("GROQ_MODEL", "llama-3.3-70b-versatile").strip()
+OPENAI_API_KEY: str = os.getenv("OPENAI_API_KEY", "").strip()
+OPENAI_BASE_URL: str = os.getenv("OPENAI_BASE_URL", "https://api.openai.com/v1").strip()
+OPENAI_MODEL: str = os.getenv("OPENAI_MODEL", "gpt-4o-mini").strip()
+FREE_LLM_ENABLED: bool = os.getenv("FREE_LLM_ENABLED", "true").strip().lower() in ("1", "true", "yes")
 
 UPLOAD_DIR: Path = BASE_DIR / "uploads"
 VOICE_UPLOAD_DIR: Path = UPLOAD_DIR / "voice"

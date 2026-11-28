@@ -109,6 +109,11 @@ async def run_test_suite() -> int:
     check(cgr.get("extracted_complaint") is not None, "Extracts grievance data from casual chat message")
     check(cgr["extracted_complaint"]["target_module"] == "transportation", "Chatbot routes transit grievance to transportation")
     check(len(cgr["extracted_complaint"]["formatted_description"]) > 20, "Generates structured report preview inside chatbot")
+    check(bool(cgr.get("recommendations")), "Provides actionable recommendations")
+
+    cq = await chat_with_grievance_ai("❓ How does intelligent routing work?")
+    check(cq.get("extracted_complaint") is None, "Does not generate dummy complaint draft for questions")
+    check("routing" in cq["reply"].lower() and bool(cq.get("recommendations")), "Answers question directly with recommendations")
 
     print("\n── Test Suite 6: Coordinator Draft Reply & Executive Summary ──")
     draft = await generate_draft_reply(

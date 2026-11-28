@@ -11,6 +11,7 @@ export default function AiChatWidget() {
   const [isOpen, setIsOpen] = useState(false);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
+  const [aiStatus, setAiStatus] = useState(null);
   const [messages, setMessages] = useState([
     {
       id: 'init-1',
@@ -34,8 +35,13 @@ export default function AiChatWidget() {
   useEffect(() => {
     if (isOpen) {
       scrollToBottom();
+      if (!aiStatus) {
+        axios.get('/api/ai/status')
+          .then(res => setAiStatus(res.data))
+          .catch(() => {});
+      }
     }
-  }, [messages, isOpen]);
+  }, [messages, isOpen, aiStatus]);
 
   // If user is not logged in, don't show the widget
   if (!user) return null;
@@ -74,6 +80,7 @@ export default function AiChatWidget() {
           id: botMsgId,
           sender: 'bot',
           text: botReply.reply,
+          recommendations: botReply.recommendations || [],
           extracted_complaint: botReply.extracted_complaint,
           routing: botReply.routing,
           safety: botReply.safety,
@@ -155,8 +162,16 @@ export default function AiChatWidget() {
               <div>
                 <div style={{ fontWeight: 700, fontSize: 14 }}>KLE Saarthi AI</div>
                 <div style={{ fontSize: 11, color: '#CBD5E1', display: 'flex', alignItems: 'center', gap: 6 }}>
-                  <span style={{ width: 7, height: 7, borderRadius: '50%', background: '#22C55E', display: 'inline-block' }} />
-                  Intelligent Routing Active
+                  <span style={{
+                    width: 7,
+                    height: 7,
+                    borderRadius: '50%',
+                    background: aiStatus?.configured ? '#22C55E' : '#F59E0B',
+                    display: 'inline-block'
+                  }} />
+                  {aiStatus?.configured
+                    ? `Live ${aiStatus.provider.toUpperCase()} Active`
+                    : 'Smart Campus Assistant'}
                 </div>
               </div>
             </div>
@@ -177,6 +192,27 @@ export default function AiChatWidget() {
               <div key={m.id} style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
                 <div className={`chat-bubble ${m.sender === 'user' ? 'chat-bubble-user' : 'chat-bubble-bot'}`}>
                   <div style={{ whiteSpace: 'pre-wrap' }}>{m.text}</div>
+
+                  {/* Actionable Recommendations */}
+                  {m.recommendations && m.recommendations.length > 0 && (
+                    <div style={{
+                      marginTop: 8,
+                      padding: '8px 10px',
+                      borderRadius: 6,
+                      background: 'rgba(15, 23, 42, 0.04)',
+                      border: '1px solid var(--border)',
+                      fontSize: 12,
+                    }}>
+                      <div style={{ fontWeight: 700, fontSize: 11, color: 'var(--primary)', marginBottom: 4 }}>
+                        💡 Recommendations
+                      </div>
+                      <ul style={{ margin: 0, paddingLeft: 16, display: 'flex', flexDirection: 'column', gap: 3 }}>
+                        {m.recommendations.map((rec, idx) => (
+                          <li key={idx}>{rec}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
 
                   {/* Extracted Complaint Card if generated */}
                   {m.extracted_complaint && (
